@@ -11,9 +11,6 @@ exports.selectReviewByID = (review_id) => {
           msg: `No review found for review_id: ${review_id}`,
         });
       }
-      if(typeof review_id != 'number') {
-        console.log(review_id);
-      }
       return review;
     });
 };

@@ -27,7 +27,7 @@ describe("GET /api/categories", () => {
   });
 });
 
-describe.only("GET /api/reviews/:review_id", () => {
+describe("GET /api/reviews/:review_id", () => {
   it("resonds with a review object of properties: review_id, title, review_body, designer, review_img_url, votes, category, owner, created_at", () => {
     return request(app)
       .get("/api/reviews/1")
