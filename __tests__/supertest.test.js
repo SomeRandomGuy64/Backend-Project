@@ -26,3 +26,38 @@ describe("GET /api/categories", () => {
       });
   });
 });
+
+describe.only("GET /api/reviews/:review_id", () => {
+  it("resonds with a review object of properties: review_id, title, review_body, designer, review_img_url, votes, category, owner, created_at", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then((res) => {
+        const review = res.body.review;
+        expect(review).toMatchObject({
+          review_id: expect.any(Number),
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: expect.any(Number),
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        });
+      });
+  });
+  it("review id doesn't exist, responds with a 404", () => {
+    return request(app).get("/api/reviews/99999").expect(404).then(({body}) => {
+      expect(body.msg).toContain("No review found for review_id");
+    })
+  });
+  it("review id is not a valid number, responds with a 400", () => {
+    return request(app)
+      .get("/api/reviews/dog")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+});
