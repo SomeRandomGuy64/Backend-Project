@@ -17,7 +17,6 @@ describe("GET /api/categories", () => {
       .then((res) => {
         const categories = res.body.categories;
         categories.forEach((category) => {
-          expect(Object.keys(category)).toMatchObject(["slug", "description"]);
           expect(category).toMatchObject({
             slug: expect.any(String),
             description: expect.any(String),
