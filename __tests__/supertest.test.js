@@ -15,8 +15,15 @@ describe("GET /api/categories", () => {
       .get("/api/categories")
       .expect(200)
       .then((res) => {
-        expect(res.body.categories.length).toBe(4);
-        expect(Object.keys(res.body.categories[0])).toMatchObject(["slug", "description"]);
+        const categories = res.body.categories;
+        categories.forEach((category) => {
+          expect(Object.keys(category)).toMatchObject(["slug", "description"]);
+          expect(category).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
+        });
+        expect(categories.length).toBe(4);
       });
   });
 });

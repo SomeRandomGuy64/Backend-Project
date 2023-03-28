@@ -1,5 +1,5 @@
 const express = require("express");
-const { getCategories } = require('./db/data/development-data/controllers/getCategories.controller');
+const { getCategories } = require('./controllers/getCategories.controller');
 
 const app = express();
 
