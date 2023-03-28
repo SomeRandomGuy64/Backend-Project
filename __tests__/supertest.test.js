@@ -34,17 +34,14 @@ describe("GET /api/reviews/:review_id", () => {
       .expect(200)
       .then((res) => {
         const review = res.body.review;
-        expect(review).toMatchObject({
-          review_id: expect.any(Number),
-          title: expect.any(String),
-          review_body: expect.any(String),
-          designer: expect.any(String),
-          review_img_url: expect.any(String),
-          votes: expect.any(Number),
-          category: expect.any(String),
-          owner: expect.any(String),
-          created_at: expect.any(String),
-        });
+        expect(review.review_id).toBe(1);
+        expect(review.title).toBe('Agricola');
+        expect(review.designer).toBe('Uwe Rosenberg');
+        expect(review.owner).toBe('mallionaire');
+        expect(review.review_img_url).toBe('https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700');
+        expect(review.review_body).toBe('Farmyard fun!');
+        expect(review.created_at).toBe('2021-01-18T10:00:20.514Z');
+        expect(review.votes).toBe(1);
       });
   });
   it("review id doesn't exist, responds with a 404", () => {
