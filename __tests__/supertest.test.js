@@ -71,7 +71,7 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then((res) => {
         const reviews = res.body.reviews;
-        reviews.forEach((review) => {
+        reviews.forEach((review, index, arr) => {
           expect(review).toMatchObject({
             review_id: expect.any(Number),
             title: expect.any(String),
@@ -81,8 +81,13 @@ describe("GET /api/reviews", () => {
             category: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
-            comment_count: expect.any(String)
+            comment_count: expect.any(String),
           });
+          if (index > 0) {
+            expect(new Date(review.created_at).getTime()).toBeLessThanOrEqual(
+              new Date(arr[index - 1].created_at).getTime()
+            );
+          }
         });
         expect(reviews.length).toBe(13);
       });
