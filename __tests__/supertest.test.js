@@ -83,11 +83,9 @@ describe("GET /api/reviews", () => {
             votes: expect.any(Number),
             comment_count: expect.any(String),
           });
-          if (index > 0) {
-            expect(new Date(review.created_at).getTime()).toBeLessThanOrEqual(
-              new Date(arr[index - 1].created_at).getTime()
-            );
-          }
+        });
+        expect(reviews).toBeSorted("created_at", {
+          descending: true,
         });
         expect(reviews.length).toBe(13);
       });
