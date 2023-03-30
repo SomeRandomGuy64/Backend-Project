@@ -20,7 +20,7 @@ exports.selectComments = (review_id) => {
           const comments = rows;
           if (comments.length === 0) {
             return Promise.reject({
-              status: 204,
+              status: 200,
               msg: `No comments found for review_id: ${review_id}`,
             });
           }

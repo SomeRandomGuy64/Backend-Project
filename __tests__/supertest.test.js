@@ -115,8 +115,8 @@ describe("GET /api/reviews/:review_id/comments", () => {
         expect(comments.length).toBe(3);
       });
   });
-  it("no comments for given review id, responds with a 204", () => {
-    return request(app).get("/api/reviews/1/comments").expect(204);
+  it("no comments for given review id, responds with a 200", () => {
+    return request(app).get("/api/reviews/1/comments").expect(200);
   });
   it("review id is not a valid number, responds with a 400", () => {
     return request(app)
