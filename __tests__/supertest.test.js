@@ -135,3 +135,45 @@ describe("GET /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe.only("POST /api/reviews/:review_id/comments", () => {
+  it("should add a comment to the comments table and then return it", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "dav3rid", body: "comment" })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          author: "dav3rid",
+          body: "comment",
+        });
+      });
+  });
+  it("review id doesn't exist, responds with a 404", () => {
+    return request(app)
+      .post("/api/reviews/99999/comments")
+      .send({ username: "dav3rid", body: "comment" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toContain("No review found for review_id");
+      });
+  });
+  it("review id is not a valid number, responds with a 400", () => {
+    return request(app)
+      .post("/api/reviews/dog/comments")
+      .send({ username: "dav3rid", body: "comment" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toContain(" is not a valid number");
+      });
+  });
+  it("username doesn't exist, responds with a 400", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "faizan", body: "comment" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Username not found");
+      });
+  });
+});
