@@ -176,4 +176,13 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.msg).toBe("Username not found");
       });
   });
+  it("missing required fields, responds with a 400", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing required field(s) - username and/or body");
+      });
+  });
 });
