@@ -71,7 +71,7 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then((res) => {
         const reviews = res.body.reviews;
-        reviews.forEach((review, index, arr) => {
+        reviews.forEach((review) => {
           expect(review).toMatchObject({
             review_id: expect.any(Number),
             title: expect.any(String),
@@ -88,6 +88,50 @@ describe("GET /api/reviews", () => {
           descending: true,
         });
         expect(reviews.length).toBe(13);
+      });
+  });
+});
+
+describe("GET /api/reviews/:review_id/comments", () => {
+  it("should return an array of comment objects for the given review_id with the following properties: comment_id, votes, created_at, author, body, review_id", () => {
+    return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then((res) => {
+        const comments = res.body.comments;
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            review_id: expect.any(Number),
+          });
+        });
+        expect(comments).toBeSorted("created_at", {
+          descending: true,
+        });
+        expect(comments.length).toBe(3);
+      });
+  });
+  it("no comments for given review id, responds with a 200", () => {
+    return request(app).get("/api/reviews/1/comments").expect(200);
+  });
+  it("review id is not a valid number, responds with a 400", () => {
+    return request(app)
+      .get("/api/reviews/dog/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+  it("review id doesn't exist, responds with a 404", () => {
+    return request(app)
+      .get("/api/reviews/99999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toContain("No review found for review_id");
       });
   });
 });
