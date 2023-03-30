@@ -136,7 +136,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe.only("POST /api/reviews/:review_id/comments", () => {
+describe("POST /api/reviews/:review_id/comments", () => {
   it("should add a comment to the comments table and then return it", () => {
     return request(app)
       .post("/api/reviews/1/comments")
