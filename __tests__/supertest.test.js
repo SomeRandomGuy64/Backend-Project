@@ -115,13 +115,8 @@ describe("GET /api/reviews/:review_id/comments", () => {
         expect(comments.length).toBe(3);
       });
   });
-  it("comments don't exist for given review id, responds with a 404", () => {
-    return request(app)
-      .get("/api/reviews/1/comments")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toContain("No comments found for review_id");
-      });
+  it("no comments for given review id, responds with a 204", () => {
+    return request(app).get("/api/reviews/1/comments").expect(204);
   });
   it("review id is not a valid number, responds with a 400", () => {
     return request(app)
@@ -129,6 +124,14 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Invalid input");
+      });
+  });
+  it("review id doesn't exist, responds with a 404", () => {
+    return request(app)
+      .get("/api/reviews/99999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toContain("No review found for review_id");
       });
   });
 });
