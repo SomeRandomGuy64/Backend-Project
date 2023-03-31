@@ -246,3 +246,27 @@ describe("PATCH /api/reviews/:review_id", () => {
       });
   })
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  it("should delete a comment by the given comment_id and return a 204", () => {
+    return request(app)
+    .delete("/api/comments/1")
+    .expect(204);
+  });
+  it("comment id doesn't exist, responds with a 404", () => {
+    return request(app)
+    .delete("/api/comments/9999999")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toContain("No comment found for comment_id")
+    })
+  });
+  it('comment id is invalid', () => {
+    return request(app)
+    .delete("/api/comments/dog")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toContain("Invalid input")
+    })
+  })
+});
