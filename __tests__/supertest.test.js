@@ -351,7 +351,7 @@ describe('GET /api/reviews queries', () => {
       .get("/api/reviews?category=socialdeduction&sort_by=review_id&order=asc")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toContain("Invalid input");
+        expect(body.msg).toContain("Category not found");
       });
   });
   it("invalid sort_by, returns a 400", () => {
