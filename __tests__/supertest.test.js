@@ -326,10 +326,10 @@ describe('GET /api/reviews queries', () => {
         expect(reviews.length).toBe(11);
       });
   });
-  it("invalid category returns a 400", () => {
+  it("invalid category returns a 404", () => {
     return request(app)
       .get("/api/reviews?category=socialdeduction&sort_by=review_id&order=asc")
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
         expect(body.msg).toContain("Invalid input");
       });
