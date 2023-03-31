@@ -5,9 +5,10 @@ const { getReviews } = require("./controllers/getReviews.controller");
 const { getComments } = require("./controllers/getComments.controller");
 const { addComment } = require("./controllers/addComment.controller");
 const { addVotes } = require("./controllers/addVotes.controller");
-const { deleteComment } = require('./controllers/deleteComment.controller')
+const { deleteComment } = require("./controllers/deleteComment.controller");
+const { getUsers } = require('./controllers/getUsers.controller');
 const { resStatus400 } = require("./error/status400Code22P02");
-const { res400err23502 } = require('./error/res400err23502');
+const { res400err23502 } = require("./error/res400err23502");
 const { resStatus500 } = require("./error/status500");
 const { customErr } = require("./error/customErr");
 
@@ -27,7 +28,9 @@ app.post("/api/reviews/:review_id/comments", addComment);
 
 app.patch("/api/reviews/:review_id", addVotes);
 
-app.delete('/api/comments/:comment_id', deleteComment)
+app.delete("/api/comments/:comment_id", deleteComment);
+
+app.get('/api/users', getUsers)
 
 app.use((err, req, res, next) => {
   customErr(res, err);
