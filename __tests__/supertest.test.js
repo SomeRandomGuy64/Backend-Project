@@ -179,10 +179,12 @@ describe("POST /api/reviews/:review_id/comments", () => {
   it("missing required fields, responds with a 400", () => {
     return request(app)
       .post("/api/reviews/1/comments")
-      .send({ })
+      .send({})
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Missing required field(s) - username and/or body");
+        expect(body.msg).toBe(
+          "Missing required field(s) - username and/or body"
+        );
       });
   });
   it("should add a comment to the comments table and then return it, ignoring the extra fields", () => {
@@ -198,3 +200,104 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/reviews/:review_id", () => {
+  it("should accept an object in the form { inc_votes: newVote } and then increment the votes of the review by newVote before responding with the updated review", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: 10 })
+      .expect(200)
+      .then((res) => {
+        const review = res.body.review;
+        expect(review.review_id).toBe(1);
+        expect(review.title).toBe("Agricola");
+        expect(review.designer).toBe("Uwe Rosenberg");
+        expect(review.owner).toBe("mallionaire");
+        expect(review.review_img_url).toBe(
+          "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700"
+        );
+        expect(review.review_body).toBe("Farmyard fun!");
+        expect(review.created_at).toBe("2021-01-18T10:00:20.514Z");
+        expect(review.votes).toBe(11);
+      });
+  });
+  it("review id doesn't exist, responds with a 404", () => {
+    return request(app)
+      .patch("/api/reviews/99999")
+      .send({ inc_votes: 10 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toContain("No review found for review_id");
+      });
+  });
+  it("review id is not a valid number, responds with a 400", () => {
+    return request(app)
+      .patch("/api/reviews/dog")
+      .send({ inc_votes: 10 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toContain("Invalid input");
+      });
+  });
+  it("missing inc_votes, responds with a 400", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("No input found");
+      });
+  });
+  it('inc_votes is an invalid number, responds with a 400', () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: 'dog' })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  })
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  it("should delete a comment by the given comment_id and return a 204", () => {
+    return request(app)
+    .delete("/api/comments/1")
+    .expect(204);
+  });
+  it("comment id doesn't exist, responds with a 404", () => {
+    return request(app)
+    .delete("/api/comments/9999999")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toContain("No comment found for comment_id")
+    })
+  });
+  it('comment id is invalid', () => {
+    return request(app)
+    .delete("/api/comments/dog")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toContain("Invalid input")
+    })
+  })
+});
+
+describe('GET /api/users', () => {
+  it('should return an array of objects with ech objects having the folllowing properties: username, name, avatar_url', () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+        const users = res.body.users;
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+        expect(users.length).toBe(4);
+      });
+  })
+})
