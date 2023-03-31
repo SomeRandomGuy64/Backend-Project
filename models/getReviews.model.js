@@ -21,7 +21,7 @@ exports.selectReviews = (category, sort_by, order) => {
       const categoryQuery = "SELECT * FROM categories WHERE slug = $1";
       return db.query(categoryQuery, [category]).then((res) => {
         if (res.rows.length === 0) {
-          return Promise.reject({ status: 400, msg: "Invalid input" });
+          return Promise.reject({ status: 404, msg: "Invalid input" });
         }
       });
     } else {
