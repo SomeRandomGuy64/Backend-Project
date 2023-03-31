@@ -28,7 +28,7 @@ describe("GET /api/categories", () => {
 });
 
 describe("GET /api/reviews/:review_id", () => {
-  it("resonds with a review object of properties: review_id, title, review_body, designer, review_img_url, votes, category, owner, created_at", () => {
+  it("resonds with a review object of properties: review_id, title, review_body, designer, review_img_url, votes, category, owner, created_at, comment_count", () => {
     return request(app)
       .get("/api/reviews/1")
       .expect(200)
@@ -44,6 +44,26 @@ describe("GET /api/reviews/:review_id", () => {
         expect(review.review_body).toBe("Farmyard fun!");
         expect(review.created_at).toBe("2021-01-18T10:00:20.514Z");
         expect(review.votes).toBe(1);
+        expect(review.comment_count).toBe("0");
+      });
+  });
+  it("resonds with a review object of properties: review_id, title, review_body, designer, review_img_url, votes, category, owner, created_at, comment_count but this time with a comment_count above 0", () => {
+    return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then((res) => {
+        const review = res.body.review;
+        expect(review.review_id).toBe(2);
+        expect(review.title).toBe("Jenga");
+        expect(review.designer).toBe("Leslie Scott");
+        expect(review.owner).toBe("philippaclaire9");
+        expect(review.review_img_url).toBe(
+          "https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700"
+        );
+        expect(review.review_body).toBe("Fiddly fun for all the family");
+        expect(review.created_at).toBe("2021-01-18T10:01:41.251Z");
+        expect(review.votes).toBe(5);
+        expect(review.comment_count).toBe("3");
       });
   });
   it("review id doesn't exist, responds with a 404", () => {
@@ -333,7 +353,7 @@ describe("GET /api/reviews queries", () => {
       .get("/api/reviews?category=socialdeduction&sort_by=review_id&order=asc")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toContain("Invalid input");
+        expect(body.msg).toContain("Category not found");
       });
   });
   it("invalid sort_by, returns a 400", () => {
