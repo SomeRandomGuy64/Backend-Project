@@ -3,4 +3,3 @@ exports.res400err23502 = (res, err) => {
       res.status(400).send({ msg: "No input found" });
   };
 }
-  

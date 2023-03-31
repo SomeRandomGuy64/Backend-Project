@@ -164,10 +164,10 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .send({ username: "dav3rid", body: "comment" })
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toContain(" is not a valid number");
+        expect(body.msg).toContain("Invalid input");
       });
   });
-  it("username doesn't exist, responds with a 400", () => {
+  it("username doesn't exist, responds with a 404", () => {
     return request(app)
       .post("/api/reviews/1/comments")
       .send({ username: "faizan", body: "comment" })
@@ -185,6 +185,18 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.msg).toBe(
           "Missing required field(s) - username and/or body"
         );
+      });
+  });
+  it("should add a comment to the comments table and then return it, ignoring the extra fields", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "dav3rid", body: "comment", extra_field: 'something'})
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          author: "dav3rid",
+          body: "comment",
+        });
       });
   });
 });
