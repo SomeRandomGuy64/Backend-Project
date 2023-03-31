@@ -197,7 +197,6 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(200)
       .then((res) => {
         const review = res.body.review;
-        console.log(review);
         expect(review.review_id).toBe(1);
         expect(review.title).toBe("Agricola");
         expect(review.designer).toBe("Uwe Rosenberg");
@@ -237,4 +236,13 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(body.msg).toBe("No input found");
       });
   });
+  it('inc_votes is an invalid number, responds with a 400', () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: 'dog' })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  })
 });
