@@ -320,10 +320,12 @@ describe("GET /api/users", () => {
   });
 });
 
-describe('GET /api/reviews queries', () => {
+describe("GET /api/reviews queries", () => {
   it("should return an array of review objects which should conatain all of the following properties: review_id, title, designer, owner, review_img_url, category, created_at, votes, comment_count in ascending order, sorted_by review_id and only showing teh category of social deduction", () => {
     return request(app)
-      .get("/api/reviews?category=social%20deduction&sort_by=review_id&order=asc")
+      .get(
+        "/api/reviews?category=social%20deduction&sort_by=review_id&order=asc"
+      )
       .expect(200)
       .then((res) => {
         const reviews = res.body.reviews;
@@ -356,7 +358,9 @@ describe('GET /api/reviews queries', () => {
   });
   it("invalid sort_by, returns a 400", () => {
     return request(app)
-      .get("/api/reviews?category=social%20deduction&sort_by=revie_id&order=asc")
+      .get(
+        "/api/reviews?category=social%20deduction&sort_by=revie_id&order=asc"
+      )
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toContain("Invalid input");
@@ -364,13 +368,15 @@ describe('GET /api/reviews queries', () => {
   });
   it("invalid order returns a 400", () => {
     return request(app)
-      .get("/api/reviews?category=social%20deduction&sort_by=review_id&order=ac")
+      .get(
+        "/api/reviews?category=social%20deduction&sort_by=review_id&order=ac"
+      )
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toContain("Invalid input");
       });
   });
-  it('returns a 200 when passed a correct category that has no associated reviews', () => {
+  it("returns a 200 when passed a correct category that has no associated reviews", () => {
     return request(app)
       .get("/api/reviews?category=children's%20games")
       .expect(200)
@@ -378,5 +384,11 @@ describe('GET /api/reviews queries', () => {
         const reviews = res.body.reviews;
         expect(reviews).toEqual([]);
       });
-  })
-})
+  });
+});
+
+describe("GET /api", () => {
+  it("should respond with a 200", () => {
+    return request(app).get("/api").expect(200);
+  });
+});
