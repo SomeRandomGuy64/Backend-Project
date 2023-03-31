@@ -326,12 +326,37 @@ describe('GET /api/reviews queries', () => {
         expect(reviews.length).toBe(11);
       });
   });
-  it("invalid category, order or sort_by, returns a 400", () => {
+  it("invalid category returns a 400", () => {
     return request(app)
-      .get("/api/reviews?category=socialdeduction&sort_by=revie_id&order=ac")
+      .get("/api/reviews?category=socialdeduction&sort_by=review_id&order=asc")
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toContain("Invalid input");
       });
   });
+  it("invalid sort_by, returns a 400", () => {
+    return request(app)
+      .get("/api/reviews?category=social%20deduction&sort_by=revie_id&order=asc")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toContain("Invalid input");
+      });
+  });
+  it("invalid order returns a 400", () => {
+    return request(app)
+      .get("/api/reviews?category=social%20deduction&sort_by=review_id&order=ac")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toContain("Invalid input");
+      });
+  });
+  it('returns a 200 when passed a correct category that has no associated reviews', () => {
+    return request(app)
+      .get("/api/reviews?category=children's%20games")
+      .expect(200)
+      .then((res) => {
+        const reviews = res.body.reviews;
+        expect(reviews).toEqual([]);
+      });
+  })
 })
