@@ -164,7 +164,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .send({ username: "dav3rid", body: "comment" })
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toContain(" is not a valid number");
+        expect(body.msg).toContain("Invalid input");
       });
   });
   it("username doesn't exist, responds with a 400", () => {

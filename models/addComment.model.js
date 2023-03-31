@@ -10,13 +10,6 @@ exports.insertComment = (newComment, review_id) => {
     });
   }
 
-  if (isNaN(Number(review_id))) {
-    return Promise.reject({
-      status: 400,
-      msg: `${review_id} is not a valid number`,
-    });
-  }
-
   return db
     .query("SELECT * FROM reviews WHERE review_id = $1;", [Number(review_id)])
     .then(({ rows }) => {
