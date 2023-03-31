@@ -307,7 +307,6 @@ describe('GET /api/reviews queries', () => {
       .expect(200)
       .then((res) => {
         const reviews = res.body.reviews;
-        console.log(reviews)
         reviews.forEach((review) => {
           expect(review).toMatchObject({
             review_id: expect.any(Number),
