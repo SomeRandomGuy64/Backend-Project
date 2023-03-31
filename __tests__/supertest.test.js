@@ -190,7 +190,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
   it("should add a comment to the comments table and then return it, ignoring the extra fields", () => {
     return request(app)
       .post("/api/reviews/1/comments")
-      .send({ username: "dav3rid", body: "comment", extra_field: 'something'})
+      .send({ username: "dav3rid", body: "comment", extra_field: "something" })
       .expect(201)
       .then(({ body }) => {
         expect(body.comment).toMatchObject({
@@ -248,43 +248,41 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(body.msg).toBe("No input found");
       });
   });
-  it('inc_votes is an invalid number, responds with a 400', () => {
+  it("inc_votes is an invalid number, responds with a 400", () => {
     return request(app)
       .patch("/api/reviews/1")
-      .send({ inc_votes: 'dog' })
+      .send({ inc_votes: "dog" })
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Invalid input");
       });
-  })
+  });
 });
 
 describe("DELETE /api/comments/:comment_id", () => {
   it("should delete a comment by the given comment_id and return a 204", () => {
-    return request(app)
-    .delete("/api/comments/1")
-    .expect(204);
+    return request(app).delete("/api/comments/1").expect(204);
   });
   it("comment id doesn't exist, responds with a 404", () => {
     return request(app)
-    .delete("/api/comments/9999999")
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toContain("No comment found for comment_id")
-    })
+      .delete("/api/comments/9999999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toContain("No comment found for comment_id");
+      });
   });
-  it('comment id is invalid', () => {
+  it("comment id is invalid", () => {
     return request(app)
-    .delete("/api/comments/dog")
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toContain("Invalid input")
-    })
-  })
+      .delete("/api/comments/dog")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toContain("Invalid input");
+      });
+  });
 });
 
-describe('GET /api/users', () => {
-  it('should return an array of objects with ech objects having the folllowing properties: username, name, avatar_url', () => {
+describe("GET /api/users", () => {
+  it("should return an array of objects with ech objects having the folllowing properties: username, name, avatar_url", () => {
     return request(app)
       .get("/api/users")
       .expect(200)
@@ -299,5 +297,42 @@ describe('GET /api/users', () => {
         });
         expect(users.length).toBe(4);
       });
-  })
+  });
+});
+
+describe('GET /api/reviews queries', () => {
+  it("should return an array of review objects which should conatain all of the following properties: review_id, title, designer, owner, review_img_url, category, created_at, votes, comment_count in ascending order, sorted_by review_id and only showing teh category of social deduction", () => {
+    return request(app)
+      .get("/api/reviews?category=social%20deduction&sort_by=review_id&order=asc")
+      .expect(200)
+      .then((res) => {
+        const reviews = res.body.reviews;
+        console.log(reviews)
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            review_id: expect.any(Number),
+            title: expect.any(String),
+            designer: expect.any(String),
+            owner: expect.any(String),
+            review_img_url: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String),
+          });
+        });
+        expect(reviews).toBeSorted("review_id", {
+          ascending: true,
+        });
+        expect(reviews.length).toBe(11);
+      });
+  });
+  it("invalid category, order or sort_by, returns a 400", () => {
+    return request(app)
+      .get("/api/reviews?category=socialdeduction&sort_by=revie_id&order=ac")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toContain("Invalid input");
+      });
+  });
 })
