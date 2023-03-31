@@ -253,4 +253,12 @@ describe("DELETE /api/comments/:comment_id", () => {
       expect(body.msg).toContain("No comment found for comment_id")
     })
   });
+  it('comment id is invalid', () => {
+    return request(app)
+    .delete("/api/comments/dog")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toContain("Invalid input")
+    })
+  })
 });
