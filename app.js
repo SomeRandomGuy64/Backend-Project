@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors');
 const { getCategories } = require("./controllers/getCategories.controller");
 const { getReviewByID } = require("./controllers/getReviewByID.controller");
 const { getReviews } = require("./controllers/getReviews.controller");
@@ -14,6 +15,8 @@ const { resStatus500 } = require("./error/status500");
 const { customErr } = require("./error/customErr");
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
